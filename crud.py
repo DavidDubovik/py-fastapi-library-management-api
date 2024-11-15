@@ -33,3 +33,39 @@ def get_books(db: Session, skip: int = 0, limit: int = 10, author_id: Optional[i
     if author_id:
         query = query.filter(Book.author_id == author_id)
     return query.all()
+
+
+def update_author(db: Session, author_id: int, author_data: AuthorCreate):
+    db_author = db.query(Author).filter(Author.id == author_id).first()
+    if db_author:
+        for key, value in author_data.dict().items():
+            setattr(db_author, key, value)
+        db.commit()
+        db.refresh(db_author)
+    return db_author
+
+
+def delete_author(db: Session, author_id: int):
+    db_author = db.query(Author).filter(Author.id == author_id).first()
+    if db_author:
+        db.delete(db_author)
+        db.commit()
+    return db_author
+
+
+def update_book(db: Session, book_id: int, book_data: BookCreate):
+    db_book = db.query(Book).filter(Book.id == book_id).first()
+    if db_book:
+        for key, value in book_data.dict().items():
+            setattr(db_book, key, value)
+        db.commit()
+        db.refresh(db_book)
+    return db_book
+
+
+def delete_book(db: Session, book_id: int):
+    db_book = db.query(Book).filter(Book.id == book_id).first()
+    if db_book:
+        db.delete(db_book)
+        db.commit()
+    return db_book
